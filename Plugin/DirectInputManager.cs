@@ -72,6 +72,7 @@ namespace DirectInputManager {
     public static bool isInitialized { get => _isInitialized; }
     public static DeviceInfo[] devices { get => _devices; }
     public static Dictionary<string, ActiveDeviceInfo> activeDevices { get => _activeDevices; }
+    public static bool pollForDeviceChanges { get; set; } = true;
 
     //////////////////////////////////////////////////////////////
     // Methods
@@ -330,7 +331,12 @@ namespace DirectInputManager {
     /// <summary>
     /// Fetches device state and triggers events if state changed<br/>
     /// </summary>
-    public static void Poll(string guidInstance) {
+    public static void Poll(string guidInstance) { 
+        
+      // allow to disable polling to avoid per frame memory allocations
+      if(!pollForDeviceChanges)
+       return;
+
       ActiveDeviceInfo ADI;
       if (_activeDevices.TryGetValue(guidInstance, out ADI)) { // Check if device active
         Int32 oldHash = ADI.stateHash;
