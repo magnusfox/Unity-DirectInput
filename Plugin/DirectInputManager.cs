@@ -65,6 +65,7 @@ namespace DirectInputManager {
     private static bool _isInitialized = false;               // is DIManager ready
     private static DeviceInfo[] _devices = new DeviceInfo[0]; // Hold data for devices plugged in
     private static Dictionary<string, ActiveDeviceInfo> _activeDevices = new Dictionary<string, ActiveDeviceInfo>(); // Hold data for devices actively attached
+    private static Dictionary<string, DICondition[]> cachedConditions { get; set; } = new();
 
     //////////////////////////////////////////////////////////////
     // Public Variables
@@ -504,10 +505,11 @@ namespace DirectInputManager {
     /// <returns>
     /// A boolean representing the if the Effect updated successfully
     /// </returns>
-    public static bool UpdateSpringSimple(string guidInstance, uint deadband, int offset, int negativeCoefficient, int positiveCoefficient, uint negativeSaturation, uint positiveSaturation) {
-      DICondition[] conditions = new DICondition[1];
+    public static bool UpdateSpringSimple(string guidInstance, uint deadband, int offset, int negativeCoefficient, int positiveCoefficient, uint negativeSaturation, uint positiveSaturation)
+    {
+      var conditions = GetOrCreateConditions(nameof(UpdateDamperSimple));
+        
       for (int i = 0; i < conditions.Length; i++) {
-        conditions[i] = new DICondition();
         conditions[i].deadband =            ClampAgnostic(deadband,                 0, 10000);
         conditions[i].offset =              ClampAgnostic(offset,              -10000, 10000);
         conditions[i].negativeCoefficient = ClampAgnostic(negativeCoefficient, -10000, 10000);
@@ -520,6 +522,19 @@ namespace DirectInputManager {
       if (hresult != 0) { DebugLog($"UpdateFFBEffect Failed: 0x{hresult.ToString("x")} {WinErrors.GetSystemMessage(hresult)}"); return false; }
       return true;
     }
+
+
+    private static DICondition[] GetOrCreateConditions(string key)
+    {
+        if (cachedConditions.TryGetValue(key, out var existingCondition))
+            return existingCondition;
+
+        var container = new DICondition[1];
+        container[0] = new DICondition();
+        cachedConditions[key] = container;
+        return container;
+    }
+
 
     /// <summary>
     /// Magnitude: Strength of Force [-10,000 - 10,0000]
