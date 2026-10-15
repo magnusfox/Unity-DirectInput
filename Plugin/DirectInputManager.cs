@@ -441,6 +441,7 @@ namespace DirectInputManager {
     // Effect Specific Methods
     //////////////////////////////////////////////////////////////
 
+
     /// <summary>
     /// Update existing effect with new DICONDITION array<br/><br/>
     /// 
@@ -478,9 +479,9 @@ namespace DirectInputManager {
     /// A boolean representing the if the Effect updated successfully
     /// </returns>
     public static bool UpdateConstantForceSimple(string guidInstance, int Magnitude) {
-      DICondition[] conditions = new DICondition[1];
+      var conditions = GetOrCreateConditions(nameof(UpdateConstantForceSimple));
+      
       for (int i = 0; i < conditions.Length; i++) {
-        conditions[i] = new DICondition();
         conditions[i].deadband = 0;
         conditions[i].offset = 0;
         conditions[i].negativeCoefficient = ClampAgnostic(Magnitude, -10000, 10000);
@@ -507,7 +508,7 @@ namespace DirectInputManager {
     /// </returns>
     public static bool UpdateSpringSimple(string guidInstance, uint deadband, int offset, int negativeCoefficient, int positiveCoefficient, uint negativeSaturation, uint positiveSaturation)
     {
-      var conditions = GetOrCreateConditions(nameof(UpdateDamperSimple));
+      var conditions = GetOrCreateConditions(nameof(UpdateSpringSimple));
         
       for (int i = 0; i < conditions.Length; i++) {
         conditions[i].deadband =            ClampAgnostic(deadband,                 0, 10000);
@@ -543,9 +544,10 @@ namespace DirectInputManager {
     /// A boolean representing the if the Effect updated successfully
     /// </returns>
     public static bool UpdateDamperSimple(string guidInstance, int Magnitude) {
-      DICondition[] conditions = new DICondition[1];
+      
+      var conditions = GetOrCreateConditions(nameof(UpdateDamperSimple));
+
       for (int i = 0; i < conditions.Length; i++) {
-        conditions[i] = new DICondition();
         conditions[i].deadband = 0;
         conditions[i].offset = 0;
         conditions[i].negativeCoefficient = ClampAgnostic(Magnitude, -10000, 10000);
@@ -567,9 +569,10 @@ namespace DirectInputManager {
     /// A boolean representing the if the Effect updated successfully
     /// </returns>
     public static bool UpdateFrictionSimple(string guidInstance, int Magnitude) {
-      DICondition[] conditions = new DICondition[1];
+
+      var conditions = GetOrCreateConditions(nameof(UpdateFrictionSimple));
+
       for (int i = 0; i < conditions.Length; i++) {
-        conditions[i] = new DICondition();
         conditions[i].deadband = 0;
         conditions[i].offset = 0;
         conditions[i].negativeCoefficient = ClampAgnostic(Magnitude, -10000, 10000);
@@ -590,9 +593,10 @@ namespace DirectInputManager {
     /// A boolean representing the if the Effect updated successfully
     /// </returns>
     public static bool UpdateInertiaSimple(string guidInstance, int Magnitude) {
-      DICondition[] conditions = new DICondition[1];
+     
+      var conditions = GetOrCreateConditions(nameof(UpdateInertiaSimple));
+      
       for (int i = 0; i < conditions.Length; i++) {
-        conditions[i] = new DICondition();
         conditions[i].deadband = 0;
         conditions[i].offset = 0;
         conditions[i].negativeCoefficient = ClampAgnostic(Magnitude, -10000, 10000);
